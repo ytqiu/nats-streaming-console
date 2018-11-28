@@ -1,8 +1,8 @@
 const axios = require('axios')
-const { getNerveInstance, options, updateOptions } = require('../nats-ss')
+const natsSS = require('../nats-ss')
 
 exports.getServerOptions = async (req, res) => {
-    res.status(200).send(options)
+    res.status(200).send(natsSS.options)
 }
 
 exports.setServerOptions = async (req, res) => {
@@ -15,7 +15,8 @@ exports.setServerOptions = async (req, res) => {
             headers: { Accept: 'application/json' },
             proxy: false,
         })
-        updateOptions({
+
+        natsSS.updateOptions({
             server: `nats://${host}:${port}`,
             monitor: `http://${host}:${monitoringPort}`,
             cluster: resp.data.cluster_id,

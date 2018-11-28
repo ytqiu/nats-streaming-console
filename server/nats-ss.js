@@ -7,7 +7,7 @@ const defaults = {
     server: process.env.STAN_URL || 'nats://localhost:4222',
     monitor: process.env.STAN_MONITOR_URL || 'http://localhost:8882',
     cluster: process.env.STAN_CLUSTER || 'test-cluster',
-    appName: 'nats-streaming-console-ks',
+    appName: 'nats-streaming-console',
 }
 
 exports.options = Object.assign({}, defaults, JSON.parse(fs.readFileSync(configPath)))
