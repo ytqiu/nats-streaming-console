@@ -23,3 +23,4 @@ yarn-error.log*
 # build artifacts
 src/**/*.css
 .vscode
+server/nats-ss.config
