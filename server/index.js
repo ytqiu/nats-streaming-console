@@ -17,24 +17,27 @@ app.get('/api/server', getServerOptions)
 app.post('/api/server', bodyParser.json(), setServerOptions)
 app.get('/api/channel/:channel/message', channelMessageList)
 app.get('*', (req, res) => {
-  res.status(404).send('Not here.')
+    res.sendfile('build/index.html')
 })
 
 // SETUP WEB SOCKETS
 const io = socketio(http)
-io.on('connection', client => {
-  const clientMessageBridge = new Bridge(client)
-  client.on('subscribe-to-channel', data => {
-    clientMessageBridge.subscribeToChannel(data)
-  })
-  client.on('unsubscribe-from-channel', data => {
-    clientMessageBridge.unsubscribeFromChannel(data)
-  })
+io.on('connection', (client) => {
+    const clientMessageBridge = new Bridge(client)
+    client.on('subscribe-to-channel', (data) => {
+        clientMessageBridge.subscribeToChannel(data)
+    })
+    client.on('unsubscribe-from-channel', (data) => {
+        clientMessageBridge.unsubscribeFromChannel(data)
+    })
+    client.on('disconnect', () => {
+        clientMessageBridge.unsubscribeAll()
+    })
 })
 
 // START SERVER
 const server = http.listen(8282, () => {
-  var host = server.address().address
-  var port = server.address().port
-  console.log(`Example app listening at http://${host}:${port}`)
+    var host = server.address().address
+    var port = server.address().port
+    console.log(`Example app listening at http://${host}:${port}`)
 })

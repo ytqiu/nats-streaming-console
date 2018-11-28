@@ -1,30 +1,29 @@
 const axios = require('axios')
-const { getNerveInstance, options } = require('../nats-ss')
+const { getNerveInstance, options, updateOptions } = require('../nats-ss')
 
 exports.getServerOptions = async (req, res) => {
-  res.status(200).send(options)
+    res.status(200).send(options)
 }
 
 exports.setServerOptions = async (req, res) => {
-  const { host, port, monitoringPort } = req.body
-  try {
-    const resp = await axios({
-      method: 'get',
-      baseURL: `http://${host}:${monitoringPort}/`,
-      url: '/streaming/serverz',
-      headers: { 'Accept': 'application/json' },
-      proxy: false
-    })
-    updateOptions(resp.data, host, port, monitoringPort)
-    res.status(200).send({ options, data: resp.data })
-  } catch (err) {
-    console.log({ err })
-    res.status(500).send({ status: 'error' })
-  }
-}
+    const { host, port, monitoringPort } = req.body
+    try {
+        const resp = await axios({
+            method: 'get',
+            baseURL: `http://${host}:${monitoringPort}/`,
+            url: '/streaming/serverz',
+            headers: { Accept: 'application/json' },
+            proxy: false,
+        })
+        updateOptions({
+            server: `nats://${host}:${port}`,
+            monitor: `http://${host}:${monitoringPort}`,
+            cluster: resp.data.cluster_id,
+        })
 
-function updateOptions(data, host, port, monitoringPort) {
-  options.server = `nats://${host}:${port}`,
-  options.monitor = `http://${host}:${monitoringPort}`,
-  options.cluster = data.cluster_id
+        res.status(200).send({ options, data: resp.data })
+    } catch (err) {
+        console.log({ err })
+        res.status(500).send({ status: 'error' })
+    }
 }
