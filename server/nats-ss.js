@@ -19,7 +19,7 @@ exports.getNerveInstance = async () => {
 }
 
 exports.updateOptions = (options) => {
-    exports.options = Object.assign({}, exports.options, options)
+    Object.assign(exports.options, options)
     // save file
     fs.writeFile(configPath, JSON.stringify(exports.options), (error) => {
         console.log(`save nats-ss.config error: ${error}`)
