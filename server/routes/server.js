@@ -22,7 +22,7 @@ exports.setServerOptions = async (req, res) => {
             cluster: resp.data.cluster_id,
         })
 
-        res.status(200).send({ options, data: resp.data })
+        res.status(200).send({ options: natsSS.options, data: resp.data })
     } catch (err) {
         console.log({ err })
         res.status(500).send({ status: 'error' })
